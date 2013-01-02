@@ -139,7 +139,7 @@ class DepsolveCallbackBase(object):
     def procReqPo(self, po, formatted_req):
         self.log.debug('req po:   %s → %s', formatted_req, po)
     def procConflictPo(self, name, formatted_conflict):
-        self.log.debug('CONFLICT: %s → %s', po, formatted_conflict)
+        self.log.debug('CONFLICT: %s → %s', name, formatted_conflict)
     def unresolved(self, msg):
         self.log.debug('UNRESOLVED DEP: %s', msg)
     def format_missing_requires(self, po, tup):
