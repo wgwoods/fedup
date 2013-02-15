@@ -9,6 +9,8 @@ Source0:        https://github.com/downloads/wgwoods/fedup/%{name}-%{version}.ta
 
 BuildRequires:  python2-devel
 BuildRequires:  systemd-devel
+BuildRequires:  asciidoc
+BuildRequires:  libxslt
 Requires:       systemd grubby
 BuildArch:      noarch
 
@@ -26,11 +28,18 @@ fedup is the Fedora Upgrade tool.
 %build
 %{__python} setup.py build
 
+# convert manages
+a2x -d manpage -f manpage man/fedup.8.asciidoc
+
 %install
 rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install --skip-build --root $RPM_BUILD_ROOT
 make install-systemd DESTDIR=$RPM_BUILD_ROOT
 ln -sf fedup $RPM_BUILD_ROOT/%{_bindir}/fedup-cli
+
+mkdir -p %{buildroot}/%{_mandir}/man8/
+cp -a man/fedup.8 %{buildroot}/%{_mandir}/man8/
+cp -a man/fedup-cli.8 %{buildroot}/%{_mandir}/man8/
 
 
 
@@ -47,6 +56,8 @@ ln -sf fedup $RPM_BUILD_ROOT/%{_bindir}/fedup-cli
 # binaries
 %{_bindir}/fedup
 %{_bindir}/fedup-cli
+%doc %{_mandir}/man8/fedup.8*
+%doc %{_mandir}/man8/fedup-cli.8*
 
 #TODO - finish and package gtk-based GUI
 #files gtk

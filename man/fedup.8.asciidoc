@@ -1,0 +1,87 @@
+fedup(8)
+========
+:man source:  fedup
+:man manual:  FedUp User Manual
+
+NAME
+----
+fedup - Fedora Upgrade tool
+
+
+SYNOPSIS
+--------
+fedup --network 19
+
+fedup --iso --iso /home/user/fedora-19.iso
+
+fedup --device /mnt/fedora
+
+
+DESCRIPTION
+-----------
+FedUp (FEDora UPgrader) is the name of a new system for upgrading Fedora installs in Fedora 18 and above releases.
+
+The FedUp client runs on the system to be upgraded. It gathers the packages needed for upgrade in addition to downloading the required initramfs and kernel needed for the actual upgrade.
+
+The actual upgrade takes place when the system has been rebooted after running the FedUp client. The filesystems are mounted during boot, the already downloaded packages are installed and some upgrade-related tasks are performed. During the upgrade process, a special plymouth theme is used which has a progress bar to indicate current upgrade progress. 
+
+OPTIONS
+-------
+
+SOURCE
+~~~~~~
+One of these options is required:
+
+--device [DEV]::
+device or mountpoint. default: check mounted devices
+
+--iso ISO::
+installation image file
+
+--network VERSION::
+online repos matching VERSION (a number or "rawhide")
+
+
+optional arguments
+~~~~~~~~~~~~~~~~~~
+-h, --help::
+show this help message and exit
+
+-v, --verbose::
+print more info
+
+-d, --debug::
+print lots of debugging info
+
+--debuglog DEBUGLOG::
+write lots of debugging output to the given file
+
+--reboot::
+automatically reboot to start the upgrade when ready
+
+additional options for --network
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--enablerepo REPOID::
+enable one or more repos (wildcards allowed)
+
+--disablerepo REPOID::
+disable one or more repos (wildcards allowed)
+
+--addrepo REPOID=[@]URL::
+add the repo at URL (@URL for mirrorlist)
+
+--instrepo REPOID::
+get upgrader boot images from REPOID (default: auto)
+
+cleanup commands
+~~~~~~~~~~~~~~~~
+--resetbootloader::
+remove any modifications made to bootloader
+
+--clean::
+clean up everything written by fedup
+
+
+AUTHORS
+-------
+Will Woods <wwoods@redhat.com>
