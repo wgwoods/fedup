@@ -116,6 +116,7 @@ class FedupDownloader(yum.YumBase):
         r.baseurl = [varReplace(u, self.conf.yumvar) for u in baseurls if u]
         if mirrorlist:
             r.mirrorlist = varReplace(mirrorlist, self.conf.yumvar)
+        r._async = True
         self._repos.add(r)
         self._repos.enableRepo(repoid)
 
