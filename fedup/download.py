@@ -25,6 +25,7 @@ from fedup.treeinfo import Treeinfo, TreeinfoError
 from fedup.conf import Config
 from yum.Errors import YumBaseError
 from yum.parser import varReplace
+import urlgrabber
 
 enabled_plugins = ['blacklist', 'whiteout']
 disabled_plugins = ['rpm-warm-cache', 'remove-with-leaves', 'presto',
@@ -45,7 +46,16 @@ def mirrorlist(repo, arch='$basearch'):
     return mirrormanager + '?repo=%s&arch=%s' % (repo, arch)
 
 def raise_exception(failobj):
-    raise failobj.exception
+    e = failobj.exception
+
+    # Catch URLGrabber "HTTP errors" and have it retry:
+    if type(e) is urlgrabber.grabber.URLGrabError:
+        if e.errno in (12, 14, -1):
+            e.errno = -1
+            return {}
+
+    log.debug("URLGrabber error: %d: %r" % (e.errno, e))
+    raise e
 
 pluginpath = []
 def yum_plugin_for_exc():
@@ -82,6 +92,7 @@ class FedupDownloader(yum.YumBase):
         self._treeinfo = None
         self.prerepoconf.failure_callback = raise_exception
         self._repoprogressbar = None
+        self.retries = 5
         # TODO: locking to prevent multiple instances
         # TODO: override logging objects so we get yum logging
 
