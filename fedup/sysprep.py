@@ -145,6 +145,12 @@ def prep_boot(kernel, initrd):
         log.info("appending /etc/mdadm.conf to initrd")
         boot.initramfs_append_files(initrd, "/etc/mdadm.conf")
 
+    # check if the system is encrypted and need /etc/cryppttab
+    # to be present for systemd to mount it
+    if boot.need_crypttab():
+        log.info("appending /etc/crypttab to initrd")
+        boot.initramfs_append_files(initrd, "/etc/crypttab")
+
     # look for updates, and add them to initrd if found
     updates = []
     try:
