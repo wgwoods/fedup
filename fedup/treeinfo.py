@@ -184,6 +184,7 @@ class Treeinfo(RawConfigParser):
         '''Check the .treeinfo to make sure it has all required elements.'''
         for f in ('version', 'arch'):
             self.get('general', f)
+        self.checkarch()
         # TODO check for checksums for all images
 
     def checkarch(self):

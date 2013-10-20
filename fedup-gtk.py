@@ -178,7 +178,7 @@ class FedupUI(object):
         try:
             tdata = f.load_contents_finish(result)
             treeinfo.read_str(tdata)
-            ver = treeinfo.get("general", "version")
+            treeinfo.checkvalues()
         except GLib.GError as e:
             log.info("can't read .treeinfo in %s: %s", mnt.mnt, str(e))
         except TreeinfoError as e:
