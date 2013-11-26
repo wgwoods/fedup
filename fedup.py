@@ -41,12 +41,13 @@ def message(m):
 from fedup import _, kernelpath, initrdpath
 
 def setup_downloader(version, instrepo=None, cacheonly=False, repos=[],
-                     enable_plugins=[], disable_plugins=[]):
+                     enable_plugins=[], disable_plugins=[], extra_pkgs=[]):
     log.debug("setup_downloader(version=%s, repos=%s)", version, repos)
     f = UpgradeDownloader(version=version, cacheonly=cacheonly)
     f.preconf.enabled_plugins += enable_plugins
     f.preconf.disabled_plugins += disable_plugins
     f.instrepoid = instrepo
+    f.extra_pkgs = extra_pkgs
     repo_cb = output.RepoCallback()
     repo_prog = output.RepoProgress(fo=sys.stderr)
     disabled_repos = f.setup_repos(callback=repo_cb,
@@ -113,7 +114,9 @@ def main(args):
                          instrepo=args.instrepo,
                          repos=args.repos,
                          enable_plugins=args.enable_plugins,
-                         disable_plugins=args.disable_plugins)
+                         disable_plugins=args.disable_plugins,
+                         extra_pkgs=args.extra_pkgs,
+                         )
 
     if args.nogpgcheck:
         f._override_sigchecks = True
