@@ -111,6 +111,7 @@ import time
 from os.path import join, normpath
 import logging
 from StringIO import StringIO
+import rpm
 
 # TODO: release this separately so it can be used by other stuff
 #       (pungi, libvirt, etc.)
@@ -183,7 +184,13 @@ class Treeinfo(RawConfigParser):
         '''Check the .treeinfo to make sure it has all required elements.'''
         for f in ('version', 'arch'):
             self.get('general', f)
+        self.checkarch()
         # TODO check for checksums for all images
+
+    def checkarch(self):
+        '''Check that the .treeinfo correspond to the arch of the system'''
+        if not rpm.expandMacro("%_arch") == self.get('general', 'arch'):
+            raise TreeinfoError("Incorrect architecture in .treeinfo file")
 
     def checkfile(self, filename, relpath):
         '''
