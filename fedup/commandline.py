@@ -156,6 +156,10 @@ def device_or_mnt(arg):
     if arg == 'auto':
         localmedia = media.find()
     else:
+        # If the arg specified is a symlink (e.g., /dev/cdrom), follow it
+        # to the real device file
+        if os.path.islink(arg):
+            arg = os.path.realpath(arg)
         localmedia = [m for m in media.find() if arg in (m.dev, m.mnt)]
 
     if len(localmedia) == 1:
