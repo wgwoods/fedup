@@ -19,6 +19,7 @@
 
 from subprocess import check_output, PIPE, Popen, CalledProcessError
 from shutil import copyfileobj
+import os
 
 kernelprefix = "/boot/vmlinuz-"
 
@@ -74,6 +75,16 @@ def need_mdadmconf():
             line = line.strip()
             if line and not line.startswith("#"):
                 # Hey there's actual *data* in here! WE MIGHT NEED THIS!!
+                return True
+    except IOError:
+        pass
+    return False
+
+def need_crypttab():
+    '''Does this system need /etc/crypttab to boot?'''
+    try:
+        for line in os.listdir('/dev/mapper'):
+            if line.startswith('luks-'):
                 return True
     except IOError:
         pass
