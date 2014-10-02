@@ -253,6 +253,13 @@ class UpgradeDownloader(yum.YumBase):
     def build_update_transaction(self, callback=None):
         log.info("looking for updates")
         self.dsCallback = callback
+        if self.extra_pkgs:
+            searchlist = ['name']
+            self.extra_pkgs = self.extra_pkgs[0].split(',')
+            matches = self.searchGenerator(searchlist, self.extra_pkgs)
+            for (pkg, matched_value) in matches:
+                if pkg.name in self.extra_pkgs:
+                    self.install(pkg)
         self.update()
         (rv, msgs) = self.buildTransaction(unfinished_transactions_check=False)
         # NOTE: self.po_with_problems is now a list of (po1, po2, errmsg) tuples

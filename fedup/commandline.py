@@ -83,6 +83,9 @@ def parse_args(gui=False):
     # Translators: This is for '--network [VERSION]' in --help output
     req.add_argument('--network', metavar=_('VERSION'), type=VERSION,
         help=_('online repos matching VERSION (a number or "rawhide")'))
+    req.add_argument('--extra-pkgs', metavar='PKG1, PKG2, PKG3..', 
+        action='append', dest='extra_pkgs',
+        help=_('list of additional packages to install during upgrade'))
 
 
     # === options for --network ===
