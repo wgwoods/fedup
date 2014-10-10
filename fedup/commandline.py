@@ -46,6 +46,9 @@ def parse_args(gui=False):
     p.add_argument('--reboot', action='store_true', default=False,
         help=_('automatically reboot to start the upgrade when ready'))
 
+    p.add_argument('--product', metavar='PRODUCTNAME', type=product,
+        help=_('product to upgrade to'))
+
 
     # === hidden options. FOR DEBUGGING ONLY. ===
     p.add_argument('--skippkgs', action='store_true', default=False,
@@ -126,11 +129,38 @@ def parse_args(gui=False):
     if args.instrepo and args.instrepokey:
         args.repos.append(('gpgkey', 'instrepo=%s' % args.instrepokey))
 
+    # Require --product for upgrades to Fedora.next
+    distro, version, id = platform.linux_distribution()
+    fedora_next_upgrade = distro.lower() == 'fedora' and float(version) <= 20 and (args.network.lower() == 'rawhide' or float(args.network) >= 21)
+    if fedora_next_upgrade and not args.product:
+        p.error(_('''
+
+This installation of Fedora does not belong to a product, so you
+must provide the --product=PRODUCTNAME option to specify what product
+you want to upgrade to. PRODUCTNAME should be one of:
+
+ workstation: the default Fedora experience for laptops and desktops
+ server: the default Fedora experience for servers
+ cloud: a base image for use on public and private clouds
+ nonproduct: choose this if none of the above apply; in particular,
+   choose this if you are using an alternate-desktop spin of Fedora
+
+See https://fedoraproject.org/wiki/Upgrading for more information.
+'''))
+
     if not gui:
         if args.clean:
             args.resetbootloader = True
 
     return args
+
+def product(arg):
+    valid_products = ['workstation', 'server', 'cloud', 'nonproduct']
+    if not arg in valid_products:
+        msg = _('PRODUCTNAME must be one of: %s' % ', '.join(valid_products))
+        raise argparse.ArgumentTypeError(msg)
+
+    return arg
 
 class RepoAction(argparse.Action):
     '''Hold a list of repo actions so we can apply them in the order given.'''

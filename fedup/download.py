@@ -116,6 +116,7 @@ class UpgradeDownloader(yum.YumBase):
             conf.disable_excludes = ['all']
             conf.cache = self.cacheonly
             conf.deltarpm = 0
+            conf.upgrade_group_objects_upgrade = False
             log.debug("conf.cache=%i", conf.cache)
         return conf
 
@@ -248,6 +249,12 @@ class UpgradeDownloader(yum.YumBase):
                 repo.write(open(repofile), 'w')
             except IOError as e:
                 log.warn("couldn't write repofile for %s: %s", repo.id, str(e))
+
+    # NOTE: could raise RepoError if metadata is missing/busted
+    def install_group(self, group, callback=None):
+        log.info("installing group %s" % group)
+        self.dsCallback = callback
+        self.install(pattern=group)
 
     # NOTE: could raise RepoError if metadata is missing/busted
     def build_update_transaction(self, callback=None):
