@@ -62,6 +62,16 @@ def setup_downloader(version, instrepo=None, cacheonly=False, repos=[],
         log.info("disabled repos: " + " ".join(disabled_repos))
     return f
 
+def install_product_group(product, f):
+    product_groups = {
+        'workstation': '@^workstation-product-environment',
+        'server':      '@^server-product-environment',
+        'cloud':       '@^cloud-server-environment',
+        'nonproduct':  '@fedora-release-standard',
+    }
+
+    f.install_group(product_groups[product], callback=output.DepsolveCallback(f))
+
 def download_packages(f):
     updates = f.build_update_transaction(callback=output.DepsolveCallback(f))
     # check for empty upgrade transaction
@@ -160,6 +170,8 @@ def main(args):
         if len(f.pkgSack) == 0:
             print("no updates available in configured repos!")
             raise SystemExit(1)
+        if args.product:
+            install_product_group(args.product, f)
         pkgs = download_packages(f)
         # Run a test transaction
         probs, rv = transaction_test(pkgs)
