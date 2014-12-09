@@ -70,9 +70,9 @@ def parse_args(gui=False):
         help=_('disable yum plugins by name'))
     yumopts.add_argument('--nogpgcheck', action='store_true', default=False,
         help=_('disable GPG signature checking'))
-    yumopts.add_argument('--add-install', metavar='PKG-OR-GROUP',
+    yumopts.add_argument('--add-install', metavar='PACKAGE-OR-@GROUP}',
         action='append', dest='add_install', default=[],
-        help=_('add extra item to be installed during upgrade'))
+        help=_('add one extra package or group to be installed during upgrade, prefix groups with an "@"-symbol'))
 
 
     # Magical --product option only used for upgrading to Fedora 21
