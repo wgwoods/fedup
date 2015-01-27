@@ -22,6 +22,7 @@ import yum
 import time
 import struct
 import logging
+import sys
 from .callback import BaseTsCallback
 from .treeinfo import Treeinfo, TreeinfoError
 from .conf import Config
@@ -29,6 +30,9 @@ from yum.Errors import YumBaseError, InstallError
 from yum.parser import varReplace
 from yum.constants import TS_REMOVE_STATES, TS_TRUEINSTALL
 from yum.misc import gpgme
+# This is ugly, but we need distroSyncPkgs() and it's only in YumBaseCli
+sys.path.insert(0, '/usr/share/yum-cli')
+from cli import YumBaseCli
 
 enabled_plugins = ['blacklist', 'whiteout']
 disabled_plugins = ['rpm-warm-cache', 'remove-with-leaves', 'presto',
@@ -83,7 +87,7 @@ def list_keyring(gpgdir):
             for k in yum.misc.return_keyids_from_pubring(gpgdir)]
 
 
-class UpgradeDownloader(yum.YumBase):
+class UpgradeDownloader(YumBaseCli):
     '''Yum-based downloader class. Based roughly on AnacondaYum.'''
     def __init__(self, version=None, cachedir=cachedir, cacheonly=False):
         # TODO: special handling for version='test' where we just synthesize
@@ -254,7 +258,7 @@ class UpgradeDownloader(yum.YumBase):
         log.info("looking for updates")
         self.dsCallback = callback
         # get updates for everything on the system
-        self.update()
+        self.distroSyncPkgs([])
         # add some extra things to the upgrade transaction
         for pat in add_install:
             log.info("adding '%s' to upgrade", pat)
