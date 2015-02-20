@@ -42,7 +42,7 @@ from fedup import _, kernelpath, initrdpath
 from fedup import version as fedupversion
 
 def setup_downloader(version, instrepo=None, cacheonly=False, repos=[],
-                     enable_plugins=[], disable_plugins=[]):
+                     enable_plugins=[], disable_plugins=[], noverifyssl=False):
     log.debug("setup_downloader(version=%s, repos=%s)", version, repos)
     f = UpgradeDownloader(version=version, cacheonly=cacheonly)
     f.preconf.enabled_plugins += enable_plugins
@@ -54,7 +54,9 @@ def setup_downloader(version, instrepo=None, cacheonly=False, repos=[],
     disabled_repos = f.setup_repos(callback=repo_cb,
                                    progressbar=repo_prog,
                                    multi_progressbar=multi_prog,
-                                   repos=repos)
+                                   repos=repos,
+                                   noverifyssl=noverifyssl
+                                   )
     disabled_repos = filter(lambda id: id != f.instrepoid, disabled_repos)
     if disabled_repos:
         print _("No upgrade available for the following repos") + ": " + \
@@ -156,7 +158,8 @@ def main(args):
                          instrepo=args.instrepo,
                          repos=args.repos,
                          enable_plugins=args.enable_plugins,
-                         disable_plugins=args.disable_plugins)
+                         disable_plugins=args.disable_plugins,
+                         noverifyssl=args.noverifyssl)
 
     if args.nogpgcheck:
         f._override_sigchecks = True

@@ -111,6 +111,8 @@ def parse_args(gui=False):
         help=_('get upgrader boot images from the given URL (default: auto)'))
     net.add_argument('--instrepokey', metavar='GPGKEY', type=gpgkeyfile,
         help=_('use this GPG key to verify upgrader boot images'))
+    net.add_argument('--noverifyssl', action='store_true', default=False,
+        help=_('do not verify the SSL certificate for HTTPS connections'))
     p.set_defaults(repos=[])
 
     if not gui:
