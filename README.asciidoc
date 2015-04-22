@@ -90,7 +90,7 @@ Upgrading old system using `fedup`
 How network upgrades work
 -------------------------
 
-There's two simple rules that control where `fedup` looks for packages and
+There are two simple rules that control where `fedup` looks for packages and
 boot images when doing network upgrades.
 
 Given `fedup --network $VERSION`, fedup will:
@@ -116,7 +116,7 @@ rejected.
 
 For repo maintainers
 ~~~~~~~~~~~~~~~~~~~~
-There's two basic requirements for your repos to work with `fedup`:
+There are two basic requirements for your repos to work with `fedup`:
 
 . The URLs in your `.repo` file must work for any valid `$releasever`, and
 . The GPG key for the _new_ `$releasever` needs to be in your `-release`
